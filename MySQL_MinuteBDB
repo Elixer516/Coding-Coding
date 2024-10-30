@@ -1,0 +1,170 @@
+MYSQL SERVER COMMANDS DATABASE - HOW TO MAKE A TABLE WITHIN SQL
+
+-- Create the MatnaAp table
+CREATE TABLE MatnaAp (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    EmployeeName VARCHAR(50) NOT NULL,
+    DaysWorked INT NOT NULL,
+    DaysAbsent INT NOT NULL,
+    TotalTimeSlackedOff INT NOT NULL, 
+    Grade VARCHAR(5) NOT NULL
+);
+
+-- Insert data here
+INSERT INTO MatnaAp (EmployeeName, DaysWorked, DaysAbsent, TotalTimeSlackedOff, Grade)
+VALUES
+    ('Neil Park', 26, 0, 35, 'A+'),
+    ('Francis Elixer Tupaz', 26, 0, 23, 'A+');
+
+-- Update MatnaAp Table Here
+UPDATE MatnaAp
+SET EmployeeName = 'Neil Park', DaysAbsent = 1;
+
+-- Create the BagoAplaya table
+CREATE TABLE BagoAplaya1 (
+    id INT NOT NULL,
+    EmployeeName VARCHAR(50) NOT NULL,
+    DaysWorked INT NOT NULL,
+    DaysAbsent INT NOT NULL,
+    TotalTimeSlackedOff VARCHAR(20) NOT NULL,
+    Grade VARCHAR(5) NOT NULL
+);
+
+-- Insert data into EmployeeRecords table
+INSERT INTO BagoAplaya1 (id, EmployeeName, DaysWorked, DaysAbsent, TotalTimeSlackedOff, Grade)
+VALUES 
+    ('1, Neil Park', 26, 0, '35 Minutes', 'A+'),
+    ('2, Francis Elixer Tupaz', 26, 0, '23 Minutes', 'A+'),
+    ('3, David Brown', 26, 0, '30 Minutes', 'B+'),
+    ('4, Michael Smith', 26, 0, '32 Minutes', 'A+'),
+    ('5, John Rodriguez', 26, 0, '14 Minutes', 'A+');
+
+-- Create the Bankal table
+CREATE TABLE Bankal (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    EmployeeName VARCHAR(50) NOT NULL,
+    DaysWorked INT NOT NULL,
+    DaysAbsent INT NOT NULL,
+    TotalTimeSlackedOff VARCHAR(20) NOT NULL,
+    Grade VARCHAR(5) NOT NULL
+);
+
+-- Insert data into Bankal table
+INSERT INTO Bankal (EmployeeName, DaysWorked, DaysAbsent, TotalTimeSlackedOff, Grade)
+VALUES 
+    ('Francis Brown', 26, 0, '32 Minutes', 'A+'),
+    ('Flor Angel Tupaz', 26, 0, '31 Minutes', 'A+'),
+    ('Liam Garcia', 26, 0, '29 Minutes', 'A+'),
+    ('Olivia Garcia', 26, 0, '33 Minutes', 'A+'),
+    ('David Park', 26, 0, '25 Minutes', 'A+');
+
+-- Create the Iwha table
+CREATE TABLE Iwha (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    EmployeeName VARCHAR(50) NOT NULL,
+    DaysWorked INT NOT NULL,
+    DaysAbsent INT NOT NULL,
+    TotalTimeSlackedOff VARCHAR(20) NOT NULL,
+    Grade VARCHAR(5) NOT NULL
+);
+
+-- Insert data into Iwha table
+INSERT INTO Iwha (EmployeeName, DaysWorked, DaysAbsent, TotalTimeSlackedOff, Grade)
+VALUES 
+    ('Noah Martinez', 26, 0, '35 Minutes', 'A+'),
+    ('Olivia Johnson', 26, 0, '23 Minutes', 'A+'),
+    ('Liam Amoroso', 26, 0, '45 Minutes', 'A+'),
+    ('Emma Valles', 26, 0, '43 Minutes', 'A+'),
+    ('Sophia Rella', 26, 0, '21 Minutes', 'A+');
+
+-- Create the CatalunanPeq table
+CREATE TABLE CatalunanPeq (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    EmployeeName VARCHAR(50) NOT NULL,
+    DaysWorked INT NOT NULL,
+    DaysAbsent INT NOT NULL,
+    TotalTimeSlackedOff VARCHAR(20) NOT NULL,
+    Grade VARCHAR(5) NOT NULL
+);
+
+-- Insert data into CatalunanPeq table
+INSERT INTO CatalunanPeq (EmployeeName, DaysWorked, DaysAbsent, TotalTimeSlackedOff, Grade)
+VALUES 
+    ('Lucas Williams', 26, 0, '35 Minutes', 'A+'),
+    ('Amelia Marites', 26, 0, '23 Minutes', 'A+'),
+    ('Blessy Aringo', 26, 0, '30 Minutes', 'A+'),
+    ('Angel Bacolod', 26, 0, '32 Minutes', 'A+'),
+    ('Charlotte Human', 26, 0, '38 Minutes', 'A+');
+
+
+ -- Create the DailyPerformance table
+CREATE TABLE DailyPerformance (
+    Branch VARCHAR(50) NOT NULL,
+    Monday INT,
+    Tuesday INT,
+    Wednesday INT,
+    Thursday INT,
+    Friday INT,
+    Saturday INT,
+    Sunday INT
+);
+
+-- Insert data into DailyPerformance table
+INSERT INTO DailyPerformance (Branch, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday)
+VALUES 
+    ('MATINA APLAYA', 523023, 122923, 123456, 222314, 432312, 567675, 324234),
+    ('BAGO APLAYA', 122392, 523923, 213234, 213212, 123212, 545765, 323233),
+    ('BANKAL', 121203, 212342, 123232, 231312, 123123, 456754, 233444),
+    ('IWHA', 135023, 129293, 642343, 543313, 123234, 456345, 233433),
+    ('C. PEQUEÑO', 423203, 295203, 232111, 200231, 563234, 764343, 231343);
+
+-- Calculate average performance for each day across all branches
+SELECT 
+    AVG(Monday) AS Average_Monday,
+    AVG(Tuesday) AS Average_Tuesday,
+    AVG(Wednesday) AS Average_Wednesday,
+    AVG(Thursday) AS Average_Thursday,
+    AVG(Friday) AS Average_Friday,
+    AVG(Saturday) AS Average_Saturday,
+    AVG(Sunday) AS Average_Sunday
+FROM 
+    DailyPerformance;
+
+
+--- Create Employee Schedule Table
+-- Adjusted table creation for integer storage
+CREATE TABLE SlackSchedMatinaAplaya (
+    EmployeeName VARCHAR(50) NOT NULL,
+    Monday INT NOT NULL,
+    Tuesday INT NOT NULL,
+    Wednesday INT NOT NULL,
+    Thursday INT NOT NULL,
+    Friday INT NOT NULL,
+    Saturday INT NOT NULL,
+    Sunday INT NOT NULL
+);
+
+-- Bago Aplaya
+INSERT INTO SlackSchedMatinaAplaya (EmployeeName, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday) VALUES
+('Neil Park', 10, 7, 5, 13, 20, 11, 0),
+('Francis Tupaz', 14, 3, 21, 8, 12, 8, 0),
+('Neil Park', 31, 25, 14, 18, 7, 22, 0),
+('Francis Tupaz', 5, 5, 5, 5, 5, 10, 0);
+
+CREATE TABLE SlackScheduleBagoAplaya (
+    EmployeeName VARCHAR(50) NOT NULL,
+    Monday INT NOT NULL,
+    Tuesday INT NOT NULL,
+    Wednesday INT NOT NULL,
+    Thursday INT NOT NULL,
+    Friday INT NOT NULL,
+    Saturday INT NOT NULL,
+    Sunday INT NOT NULL
+);
+
+-- Bago Aplaya
+INSERT INTO SlackScheduleBagoAplaya (EmployeeName, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday) VALUES
+('Neil Park', 10, 7, 5, 13, 20, 11, 0),
+('Francis Elixer Tupaz', 14, 3, 21, 8, 12, 8, 0),
+('Michael Smith', 31, 25, 14, 18, 7, 22, 0),
+('John Rodriguez', 5, 5, 5, 5, 5, 10, 0);
