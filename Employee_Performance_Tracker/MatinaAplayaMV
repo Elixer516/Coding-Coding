@@ -1,0 +1,94 @@
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using EmpolyeePerformanceTracker.Model;
+using EmpolyeePerformanceTracker.Models;
+using Microsoft.Data.SqlClient;
+
+namespace EmpolyeePerformanceTracker.ModelViews
+{
+    internal class MatinaAplayaMV
+    {
+        private string connectionString;
+        public List<MatinaAplayaModel> MatinaAplaya1 { get; set; } = new List<MatinaAplayaModel>();
+
+        public MatinaAplayaMV()
+        {
+            // Assuming the connection string is stored in App.config
+            connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            LoadMatinaAplaya();
+        }
+
+        public void LoadMatinaAplaya()
+        {
+            MatinaAplaya1.Clear();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "SELECT id, EmployeeName, DaysWorked, DaysAbsent, TotalTimeSlacked, Grade FROM MatinaAplaya1;";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    MatinaAplayaModel matinaaplaya = new MatinaAplayaModel
+                    {
+                        id = reader.GetInt32(0),
+                        EmployeeName = reader.GetString(1),
+                        DaysWorked = reader.GetInt32(2),
+                        DaysAbsent = reader.GetInt32(3),
+                        TotalTimeSlacked = reader.GetString(4),
+                        Grade = reader.GetString(5)
+
+                    };
+                    MatinaAplaya1.Add(matinaaplaya);
+                }
+                connection.Close();
+            }
+        }
+
+        public void AddEmployee(MatinaAplayaModel matinaaplaya)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "INSERT INTO MatinaAplaya1 (id, EmployeeName, DaysWorked, DaysAbsent, TotalTimeSlacked, Grade) VALUES (@id, @EmployeeName, @DaysWorked, @DaysAbsent, @TotalTimeSlacked, @Grade);";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("id", matinaaplaya.id);
+                command.Parameters.AddWithValue("@EmployeeName", matinaaplaya.EmployeeName);
+                command.Parameters.AddWithValue("@DaysWorked", matinaaplaya.DaysWorked);
+                command.Parameters.AddWithValue("@DaysAbsent", matinaaplaya.DaysAbsent);
+                command.Parameters.AddWithValue("@TotalTimeSlacked", matinaaplaya.TotalTimeSlacked);
+                command.Parameters.AddWithValue("@Grade", matinaaplaya.Grade);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+
+                LoadMatinaAplaya(); // Refresh the list after adding
+            }
+        }
+
+        public void DeleteEmployee(int employeeId)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "DELETE FROM MatinaAplaya1 WHERE id = @id;";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                // Use parameterized query to prevent SQL Injection
+                command.Parameters.AddWithValue("@id", employeeId);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+
+                LoadMatinaAplaya();
+            }
+        }
+    }
+}
