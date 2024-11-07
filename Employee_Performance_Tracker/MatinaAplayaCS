@@ -1,0 +1,172 @@
+using EmpolyeePerformanceTracker.Model;
+using EmpolyeePerformanceTracker.Models;
+using EmpolyeePerformanceTracker.ModelViews;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace EmpolyeePerformanceTracker
+{
+    public partial class MatinaAplaya : Form
+    {
+        private string lastUpdatedFilePath = "LastUpdatedMatAp";
+        private MatinaAplayaMV matinaaplayaMV;
+        private Branches _branchForm;
+        public MatinaAplaya(Branches branchForm)
+        {
+           
+
+            InitializeComponent();
+            LoadLastUpdatedDate();
+            Application.ApplicationExit += (s, e) => SaveLastUpdatedDate();
+            DataGridViewMatinaAplaya.ReadOnly = true;
+            DataGridViewMatinaAplaya.AllowUserToAddRows = false;
+            DataGridViewMatinaAplaya.AllowUserToDeleteRows = false;
+            _branchForm = branchForm;
+            matinaaplayaMV = new MatinaAplayaMV();
+            LoadData();
+        }
+
+        private void LoadData()
+        {
+            DataGridViewMatinaAplaya.DataSource = null;
+            DataGridViewMatinaAplaya.DataSource = matinaaplayaMV.MatinaAplaya1;
+        }
+
+        private void SaveLastUpdatedDate()
+        {
+            //Save For Matina Aplaya Updated Date
+            File.WriteAllText(lastUpdatedFilePath, lblLastUpdatedMatAp.Text);
+        }
+
+        private void LoadLastUpdatedDate()
+        {
+            if (File.Exists(lastUpdatedFilePath))
+            {
+                lblLastUpdatedMatAp.Text = File.ReadAllText(lastUpdatedFilePath);
+            }
+            else
+            {
+                lblLastUpdatedMatAp.Text = "Last Updated: Not yet updated";
+            }
+        }
+
+        private void EmployeeList_Click(object sender, EventArgs e)
+        {
+            EmployeeList nextForm = new EmployeeList(_branchForm);
+            nextForm.Show();
+            this.Hide();
+        }
+
+        private void returnButton_Click(object sender, EventArgs e)
+        {
+            _branchForm.Show();
+            this.Close();
+        }
+
+        private void MatinaAplaya_Load(object sender, EventArgs e)
+        {
+            LoadLastUpdatedDate();
+        }
+
+        private void DataGridViewMatinaAplaya_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = DataGridViewMatinaAplaya.Rows[e.RowIndex];
+                txtEmployeeIDMatAp.Text = row.Cells["id"].Value.ToString();
+                txtEmployeeNameMatAp.Text = row.Cells["EmployeeName"].Value.ToString();
+                txtDaysWorkedMatAp.Text = row.Cells["DaysWorked"].Value.ToString();
+                txtDaysAbsentMatAp.Text = row.Cells["DaysAbsent"].Value.ToString();
+                txtTotalTimeSlackedMatAp.Text = row.Cells["TotalTimeSlacked"].Value.ToString();
+                txtGradeMatAp.Text = row.Cells["Grade"].Value.ToString();
+            }
+        }
+
+        private void btnEmployeeAdd_Click(object sender, EventArgs e)
+        {
+            // Check if any of the text boxes are empty
+            if (string.IsNullOrWhiteSpace(txtEmployeeIDMatAp.Text) ||
+                string.IsNullOrWhiteSpace(txtEmployeeNameMatAp.Text) ||
+                string.IsNullOrWhiteSpace(txtDaysWorkedMatAp.Text) ||
+                string.IsNullOrWhiteSpace(txtDaysAbsentMatAp.Text) ||
+                string.IsNullOrWhiteSpace(txtTotalTimeSlackedMatAp.Text) ||
+                string.IsNullOrWhiteSpace(txtGradeMatAp.Text))
+            {
+                // Display an error message if any field is empty
+                MessageBox.Show("Please fill in all fields before adding the employee.", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return; // Exit the method without adding to the database
+            }
+
+            try
+            {
+                // Attempt to parse numerical values and add employee if all fields are filled
+                var matinaaplaya = new MatinaAplayaModel
+                {
+                    id = int.Parse(txtEmployeeIDMatAp.Text),
+                    EmployeeName = txtEmployeeNameMatAp.Text,
+                    DaysWorked = int.Parse(txtDaysWorkedMatAp.Text),
+                    DaysAbsent = int.Parse(txtDaysAbsentMatAp.Text),
+                    TotalTimeSlacked = txtTotalTimeSlackedMatAp.Text,
+                    Grade = txtGradeMatAp.Text
+                };
+
+                // Add employee to the database
+                matinaaplayaMV.AddEmployee(matinaaplaya);
+                LoadData();
+                ClearFields();
+
+                //Save The Date
+                lblLastUpdatedMatAp.Text = "Last Updated: " + DateTime.Now.ToString("MM/dd/yyyy hh:mm tt");
+                SaveLastUpdatedDate();
+            }
+            catch (FormatException)
+            {
+                // Display an error if numeric fields contain invalid data
+                MessageBox.Show("Please enter valid numbers for Employee ID, Days Worked, and Days Absent.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                // Handle any other unexpected errors
+                MessageBox.Show("An error occurred while adding the employee: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ClearFields()
+        {
+            // Clear Text Boxes
+            txtEmployeeIDMatAp.Clear();
+            txtEmployeeNameMatAp.Clear();
+            txtDaysWorkedMatAp.Clear();
+            txtDaysAbsentMatAp.Clear();
+            txtTotalTimeSlackedMatAp.Clear();
+            txtGradeMatAp.Clear();
+        }
+
+        // Button Delete Code
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            {
+                if (DataGridViewMatinaAplaya.SelectedRows.Count > 0)
+                {
+                    var selectedRow = DataGridViewMatinaAplaya.SelectedRows[0];
+                    int id = (int)selectedRow.Cells["id"].Value;
+
+                    matinaaplayaMV.DeleteEmployee(id);
+                    LoadData();
+                    ClearFields();
+
+                    //Update Last Updated Date
+                    lblLastUpdatedMatAp.Text = "Last Updated: " + DateTime.Now.ToString("MM/dd/yyyy hh:mm tt");
+                    SaveLastUpdatedDate();
+                }
+            }
+        }
+    }
+}
